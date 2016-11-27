@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+	// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BattleTanks.h"
 #include "Tank.h"
@@ -36,8 +36,8 @@ void ATankPlayerController::AimAtCrossHair()
 	FVector HitLocation;
 	if (GetCrossHairRayHitLocation(HitLocation))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Hit location: %s"), *HitLocation.ToString());
 		// Tell the Tank what to do and aim at the crosshair
+		GetControlledTank()->AimAt(HitLocation);
 	}
 
 }
