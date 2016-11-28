@@ -2,6 +2,7 @@
 
 #include "BattleTanks.h"
 #include "TankBarrel.h"
+#include "TankTurrent.h"
 #include "AimingComponent.h"
 
 
@@ -11,7 +12,7 @@ UAimingComponent::UAimingComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	bWantsBeginPlay = true;
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 }
@@ -19,6 +20,11 @@ UAimingComponent::UAimingComponent()
 void UAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet)
 {
 	Barrel = BarrelToSet;
+}
+
+void UAimingComponent::SetTurrentReference(UTankTurrent* TurrentToSet)
+{
+	Turrent = TurrentToSet;
 }
 
 void UAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
@@ -43,14 +49,10 @@ void UAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 	{
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		MoveBarrel(AimDirection);
-		auto Time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%f: Aim Solution found"), Time);
+		RotateTurrent(AimDirection);
+	
 	}
-	else
-	{
-		auto Time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%f: No Aim Solution found"), Time);
-	}
+
 }
 
 void UAimingComponent::MoveBarrel(FVector AimDirection)
@@ -61,5 +63,15 @@ void UAimingComponent::MoveBarrel(FVector AimDirection)
 	auto DeltaRotator = AimRotator - BarrelRotator;
 	
 	Barrel->Elevate(DeltaRotator.Pitch);
+}
+
+void UAimingComponent::RotateTurrent(FVector AimDirection)
+{
+	// Work-out difference between current Turrent rotation, and AimDirection
+	auto TurrentRotator = Turrent->GetForwardVector().Rotation();
+	auto AimRotator = AimDirection.Rotation();
+	auto DeltaRotator = AimRotator - TurrentRotator;
+
+	Turrent->Rotate(DeltaRotator.Yaw);
 }
 
