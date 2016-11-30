@@ -3,6 +3,7 @@
 #include "BattleTanks.h"
 #include "TankBarrel.h"
 #include "TankTurrent.h"
+#include "Projectile.h"
 #include "AimingComponent.h"
 
 
@@ -17,13 +18,10 @@ UAimingComponent::UAimingComponent()
 	// ...
 }
 
-void UAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet)
+void UAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurrent* TurrentToSet)
 {
+	if (!BarrelToSet || !TurrentToSet) { return; }
 	Barrel = BarrelToSet;
-}
-
-void UAimingComponent::SetTurrentReference(UTankTurrent* TurrentToSet)
-{
 	Turrent = TurrentToSet;
 }
 
@@ -50,11 +48,25 @@ void UAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		MoveBarrel(AimDirection);
 		RotateTurrent(AimDirection);
-	
 	}
 
 }
 
+void UAimingComponent::Fire(float LaunchSpeed)
+{
+	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
+	if (Barrel && isReloaded)
+	{
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(
+			ProjectileBlueprint,
+			Barrel->GetSocketLocation(FName("Projectile")),
+			Barrel->GetSocketRotation(FName("Projectile"))
+			);
+
+		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+	}
+}
 void UAimingComponent::MoveBarrel(FVector AimDirection)
 {
 	// Work-out difference between current Barrel rotation, and AimDirection
