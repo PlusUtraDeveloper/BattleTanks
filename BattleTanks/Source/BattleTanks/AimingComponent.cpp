@@ -20,14 +20,14 @@ UAimingComponent::UAimingComponent()
 
 void UAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurrent* TurrentToSet)
 {
-	if (!BarrelToSet || !TurrentToSet) { return; }
+	if (!ensure(BarrelToSet) || !ensure(TurrentToSet)) { return; }
 	Barrel = BarrelToSet;
 	Turrent = TurrentToSet;
 }
 
 void UAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
-	if (!Barrel) { return; }
+	if (!ensure(Barrel)) { return; }
 	FVector OutLaunchVelocity;
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
 
@@ -52,21 +52,7 @@ void UAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 
 }
 
-void UAimingComponent::Fire(float LaunchSpeed)
-{
-	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
-	if (Barrel && isReloaded)
-	{
-		auto Projectile = GetWorld()->SpawnActor<AProjectile>(
-			ProjectileBlueprint,
-			Barrel->GetSocketLocation(FName("Projectile")),
-			Barrel->GetSocketRotation(FName("Projectile"))
-			);
 
-		Projectile->LaunchProjectile(LaunchSpeed);
-		LastFireTime = FPlatformTime::Seconds();
-	}
-}
 void UAimingComponent::MoveBarrel(FVector AimDirection)
 {
 	// Work-out difference between current Barrel rotation, and AimDirection

@@ -24,32 +24,27 @@ class BATTLETANKS_API UAimingComponent : public UActorComponent
 
 public:	
 	void AimAt(FVector HitLocation, float LaunchSpeed);
-	void Fire(float LaunchSpeed);
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void Initialise(UTankBarrel* BarrelToSet, UTankTurrent* TurrentToSet);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
-	EFiringStatus FiringStatus = EFiringStatus::Aiming;
+	EFiringStatus FiringStatus = EFiringStatus::Reloading;
 
 private:
-	UTankBarrel* Barrel = nullptr;
+	
 	UTankTurrent* Turrent = nullptr;
+	UTankBarrel* Barrel = nullptr;
 	
 	// Sets default values for this component's properties
 	UAimingComponent();
-
-	UPROPERTY(EditAnywhere, Category = "Firing")
-	float ReloadTimeInSeconds = 3;
-
-	UPROPERTY(EditAnywhere, Category = "Setup")
-	TSubclassOf<AProjectile> ProjectileBlueprint;
+	
 
 	void MoveBarrel(FVector AimDirection);
 	void RotateTurrent(FVector AimDirection);
 
-	double LastFireTime = 0;
+
 	
 
 };

@@ -2,19 +2,20 @@
 
 #include "BattleTanks.h"
 #include "Tank.h"
+#include "AimingComponent.h"
 #include "TankPlayerController.h"
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	auto PlayerTank = GetControlledTank();
-	if (!PlayerTank)
+	auto AimingComponent = GetControlledTank()->FindComponentByClass<UAimingComponent>();
+	if (ensure(AimingComponent))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No Player Controller possessed."));
+		FoundAimingComponent(AimingComponent);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerController possessing: %s"), *PlayerTank->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("PlayerController can't find aiming component at Begin Play"));
 	}
 }
 
@@ -31,7 +32,7 @@ ATank* ATankPlayerController::GetControlledTank() const
 
 void ATankPlayerController::AimAtCrossHair()
 {
-	if (!GetControlledTank()) { return; }
+	if (!ensure(GetControlledTank())) { return; }
 
 	FVector HitLocation;
 	if (GetCrossHairRayHitLocation(HitLocation))

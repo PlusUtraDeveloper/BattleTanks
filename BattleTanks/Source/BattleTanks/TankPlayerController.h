@@ -7,6 +7,7 @@
 #include "TankPlayerController.generated.h"
 
 class ATank;
+class UAimingComponent;
 
 UCLASS()
 class BATTLETANKS_API ATankPlayerController : public APlayerController
@@ -16,6 +17,9 @@ class BATTLETANKS_API ATankPlayerController : public APlayerController
 protected:
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	ATank* GetControlledTank() const;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
+	void FoundAimingComponent(UAimingComponent* AmingCompRef);
 	
 private:
 	UPROPERTY(EditDefaultsOnly)
