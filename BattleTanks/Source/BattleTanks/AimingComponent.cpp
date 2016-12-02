@@ -30,6 +30,7 @@ void UAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurrent* Turren
 	Barrel = BarrelToSet;
 	Turrent = TurrentToSet;
 }
+
 void UAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
 	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
@@ -44,6 +45,11 @@ void UAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, 
 	{
 		FiringState = EFiringState::Locked;
 	}
+}
+
+EFiringState UAimingComponent::GetFiringState() const
+{
+	return FiringState;
 }
 
 bool UAimingComponent::IsBarrelMoving()
@@ -79,7 +85,6 @@ void UAimingComponent::AimAt(FVector HitLocation)
 
 }
 
-
 void UAimingComponent::MoveBarrel(FVector AimDirection)
 {
 	// Work-out difference between current Barrel rotation, and AimDirection
@@ -88,7 +93,14 @@ void UAimingComponent::MoveBarrel(FVector AimDirection)
 	auto DeltaRotator = AimRotator - BarrelRotator;
 	
 	Barrel->Elevate(DeltaRotator.Pitch);
-	Turrent->Rotate(DeltaRotator.Yaw);
+	if(DeltaRotator.Yaw < 180)
+	{
+		Turrent->Rotate(DeltaRotator.Yaw);
+	}
+	else
+	{
+		Turrent->Rotate(-DeltaRotator.Yaw);
+	}
 }
 
 void UAimingComponent::Fire()
