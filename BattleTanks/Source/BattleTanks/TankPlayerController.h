@@ -2,11 +2,9 @@
 
 #pragma once
 
-#include "Tank.h"
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"
 
-class ATank;
 class UAimingComponent;
 
 UCLASS()
@@ -15,9 +13,6 @@ class BATTLETANKS_API ATankPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 protected:
-	UFUNCTION(BlueprintCallable, Category = "Setup")
-	ATank* GetControlledTank() const;
-
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
 	void FoundAimingComponent(UAimingComponent* AmingCompRef);
 	
@@ -32,18 +27,13 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	float LineTraceRange = 1000000.f;
 
-	
 
 	virtual void BeginPlay() override;
-
-	virtual void Tick(float) override;
+	virtual void Tick(float DeltaTime) override;
 
 	void AimAtCrossHair();
-
 	bool GetCrossHairRayHitLocation(FVector&) const;
-
 	bool GetLookDirection(FVector2D, FVector&) const;
-
 	bool GetLookVectorHitLocation(FVector, FVector&) const;
 	
 	

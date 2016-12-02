@@ -1,22 +1,15 @@
 	// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BattleTanks.h"
-#include "Tank.h"
 #include "AimingComponent.h"
 #include "TankPlayerController.h"
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	auto AimingComponent = GetControlledTank()->FindComponentByClass<UAimingComponent>();
-	if (ensure(AimingComponent))
-	{
-		FoundAimingComponent(AimingComponent);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerController can't find aiming component at Begin Play"));
-	}
+	auto AimingComponent = GetPawn()->FindComponentByClass<UAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
+	FoundAimingComponent(AimingComponent);
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -25,20 +18,16 @@ void ATankPlayerController::Tick(float DeltaTime)
 	AimAtCrossHair();
 }
 
-ATank* ATankPlayerController::GetControlledTank() const
-{ 
-	return Cast<ATank>(GetPawn());
-}
-
 void ATankPlayerController::AimAtCrossHair()
 {
-	if (!ensure(GetControlledTank())) { return; }
+	auto AimingComponent = GetPawn()->FindComponentByClass<UAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
 
 	FVector HitLocation;
 	if (GetCrossHairRayHitLocation(HitLocation))
 	{
 		// Tell the Tank what to do and aim at the crosshair
-		GetControlledTank()->AimAt(HitLocation);
+		AimingComponent->AimAt(HitLocation);
 	}
 
 }
