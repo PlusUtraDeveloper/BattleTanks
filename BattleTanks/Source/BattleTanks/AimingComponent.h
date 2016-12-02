@@ -40,10 +40,8 @@ private:
 	// Sets default values for this component's properties
 	UAimingComponent();
 	
-
 	void MoveBarrel(FVector AimDirection);
-	void RotateTurrent(FVector AimDirection);
-
+	
 
 	
 
