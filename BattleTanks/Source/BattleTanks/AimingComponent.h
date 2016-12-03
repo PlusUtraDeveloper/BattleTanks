@@ -33,7 +33,7 @@ public:
 	void Initialise(UTankBarrel* BarrelToSet, UTankTurrent* TurrentToSet);
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
-	int GetAmmoCount() const;
+	int32 GetAmmoCount() const;
 
 	EFiringState GetFiringState() const;
 protected:
@@ -57,7 +57,7 @@ private:
 	virtual void UAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
-	int Ammo = 3;
+	int32 Ammo = 3;
 
 	UPROPERTY(EditAnywhere, Category = "Firing")
 	float LaunchSpeed = 4000.f;

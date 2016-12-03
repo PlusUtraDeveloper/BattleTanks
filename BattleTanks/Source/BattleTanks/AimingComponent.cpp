@@ -126,7 +126,7 @@ void UAimingComponent::Fire()
 }
 
 
-int UAimingComponent::GetAmmoCount() const
+int32 UAimingComponent::GetAmmoCount() const
 {
 	return Ammo;
 }
