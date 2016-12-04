@@ -35,6 +35,8 @@ private:
 	bool GetCrossHairRayHitLocation(FVector&) const;
 	bool GetLookDirection(FVector2D, FVector&) const;
 	bool GetLookVectorHitLocation(FVector, FVector&) const;
-	
-	
+	virtual void SetPawn(APawn* InPawn) override;
+
+	UFUNCTION()
+	void OnTankDeath();
 };
